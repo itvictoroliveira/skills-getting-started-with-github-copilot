@@ -20,14 +20,42 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const spotsLeft = details.max_participants - details.participants.length;
 
+
+        // Create participants list HTML with delete icon and no bullets
+        let participantsHTML = `<div class="participants-section"><strong>Participants:</strong>`;
+        if (details.participants && details.participants.length > 0) {
+          participantsHTML += `<ul class="participants-list no-bullets">`;
+          details.participants.forEach(email => {
+            participantsHTML += `<li class="participant-item"><span class="participant-email">${email}</span> <span class="delete-participant" title="Remove participant" data-activity="${name}" data-email="${email}">&#128465;</span></li>`;
+          });
+          participantsHTML += `</ul>`;
+        } else {
+          participantsHTML += `<span class="no-participants">No participants yet</span>`;
+        }
+        participantsHTML += `</div>`;
+
         activityCard.innerHTML = `
           <h4>${name}</h4>
           <p>${details.description}</p>
           <p><strong>Schedule:</strong> ${details.schedule}</p>
           <p><strong>Availability:</strong> ${spotsLeft} spots left</p>
+          ${participantsHTML}
         `;
 
+
         activitiesList.appendChild(activityCard);
+
+        // Add event listeners for delete icons
+        setTimeout(() => {
+          activityCard.querySelectorAll('.delete-participant').forEach(icon => {
+            icon.addEventListener('click', async (e) => {
+              const activity = icon.getAttribute('data-activity');
+              const email = icon.getAttribute('data-email');
+              // TODO: Implement unregister API call and UI update
+              alert(`Unregister ${email} from ${activity}`);
+            });
+          });
+        }, 0);
 
         // Add option to select dropdown
         const option = document.createElement("option");
